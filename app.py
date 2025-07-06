@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 import json
 from pdf2image import convert_from_path
 from PIL import Image
+import platform
 
 # Setup Flask app
 app = Flask(__name__)
@@ -21,7 +22,8 @@ if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
 # Set Tesseract path (for Windows)
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+if platform.system() == "Windows":
+   pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 
 # 🧠 Helper: Check file type
