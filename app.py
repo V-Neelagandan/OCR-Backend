@@ -14,8 +14,9 @@ CORS(app)
 
 UPLOAD_FOLDER = 'uploads'
 JSON_FILE = 'extracted.json'
+
 # ✅ Update this path after Poppler install
-POPPLER_PATH = r'C:\Users\Neelagandan\Downloads\Release-24.08.0-0\poppler-24.08.0\Library\bin'
+POPPLER_PATH = None # Don’t hardcode Windows path
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 if not os.path.exists(UPLOAD_FOLDER):
@@ -23,7 +24,9 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 # Set Tesseract path (for Windows)
 if platform.system() == "Windows":
-   pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+else:
+    pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"  # Default Linux path
 
 
 # 🧠 Helper: Check file type
@@ -43,7 +46,7 @@ def extract_text_from_image(img_path):
 # 🧠 Helper: Extract text from PDF (convert to image)
 def extract_text_from_pdf(pdf_path):
     try:
-        images = convert_from_path(pdf_path, poppler_path=POPPLER_PATH)
+        images = convert_from_path(pdf_path, poppler_path=POPPLER_PATH) if POPPLER_PATH else convert_from_path(pdf_path)
         text = ''
         for img in images:
             text += pytesseract.image_to_string(img)
